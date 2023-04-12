@@ -91,11 +91,12 @@ def sendMail(*args):
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.starttls()
     # msg = "Hello"
-    s.login("connect.lms.developers@gmail.com", "tjrvhxjqbkwajzka")
+    s.login("connect.lms.developers@gmail.com", "xfmsbsfletutkkcx")
     if (pk == 'Rollno'):
         s.sendmail("connect.lms.developers@gmail.com",
                    args[4], msg)
     elif (pk == 'Email'):
+        print("Hello")
         s.sendmail("connect.lms.developers@gmail.com",
                    args[2], msg)
     s.quit()
@@ -394,12 +395,11 @@ def Register(request):
             print(user)
             if (user == "admin"):
                 try:
-                    # print("Hello")
                     if (request.data['user_type'] == "student"):
                         serializer = Imageserializer(data=request.data)
                         if serializer.is_valid():
-                            print("Hello")
                             serializer.save()
+                            print("Hello")
                             name = serializer.data['name']
                             email = serializer.data['email']
                             roll_no = serializer.data['roll_no']
@@ -417,6 +417,7 @@ def Register(request):
                             email = serializer.data['email']
                             password = serializer.data['password']
                             user_type = serializer.data['user_type']
+                            print(serializer.data['user_type'])
                             sendMail(user_type, name, email, password)
                             return Response({"Message": 'Done', "data": serializer.data})
                         return Response(serializer.errors)

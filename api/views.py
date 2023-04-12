@@ -394,10 +394,11 @@ def Register(request):
             print(user)
             if (user == "admin"):
                 try:
-                    print("Hello")
+                    # print("Hello")
                     if (request.data['user_type'] == "student"):
                         serializer = Imageserializer(data=request.data)
                         if serializer.is_valid():
+                            print("Hello")
                             serializer.save()
                             name = serializer.data['name']
                             email = serializer.data['email']

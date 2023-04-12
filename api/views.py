@@ -92,13 +92,17 @@ def sendMail(*args):
     s.starttls()
     # msg = "Hello"
     s.login("connect.lms.developers@gmail.com", "xfmsbsfletutkkcx")
+    
     if (pk == 'Rollno'):
+        print("Logged IN")
         s.sendmail("connect.lms.developers@gmail.com",
                    args[4], msg)
+        print("Sent mail")
     elif (pk == 'Email'):
-        print("Hello")
+        print("Logged IN")
         s.sendmail("connect.lms.developers@gmail.com",
                    args[2], msg)
+        print("Sent mail")
     s.quit()
 
     return

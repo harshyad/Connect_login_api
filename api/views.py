@@ -394,6 +394,7 @@ def Register(request):
             print(user)
             if (user == "admin"):
                 try:
+                    print("Hello")
                     if (request.data['user_type'] == "student"):
                         serializer = Imageserializer(data=request.data)
                         if serializer.is_valid():

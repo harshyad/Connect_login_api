@@ -384,7 +384,7 @@ def login(request):
                 roll_no = request.data['roll_no']
                 password = request.data['password']
             except:
-                return Response({"status":True,"msg":"Please provide all the details"})
+                return Response({"status":False,"msg":"Please provide all the details"})
             user = student_models.objects.filter(roll_no=roll_no).first()
             response = loginlogic(password, user)
             return response
@@ -394,14 +394,14 @@ def login(request):
                 email = request.data['email']
                 password = request.data['password']
             except:
-                return Response({"status":True,"msg":"Please provide all the details"})
+                return Response({"status":False,"msg":"Please provide all the details"})
             user = teacher_models.objects.filter(email=email).first()
             response = loginlogic(password, user)
             return response
         else:
             return Response({"status":False,"msg":"Please provide a valid user type"})
     except:
-        return Response({"status":True,"msg":"Some error occured"})
+        return Response({"status":False,"msg":"Some error occured"})
 
 
 @api_view(['POST'])

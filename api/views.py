@@ -1,5 +1,5 @@
-# import cv2
-# import face_recognition
+import cv2
+import face_recognition
 import os
 import jwt
 import datetime
@@ -198,175 +198,175 @@ def rename_image(user_type,email,name):
 
 # Create your views here.
 
-# @api_view(['POST'])
-# # For Comparing the image taken and the image stored in the database.
-# def facelogin(request):
+@api_view(['POST'])
+# For Comparing the image taken and the image stored in the database.
+def facelogin(request):
 
-#     if request.method == 'POST':
+    if request.method == 'POST':
 
-#         try:
-#             name = request.data['name']
-#             email = request.data['email']
-#             image = request.data['image']
-#             user_type = request.data['user_type']
-#         except:
-#             return Response({"Error": "Please provide all the details"})
+        try:
+            name = request.data['name']
+            email = request.data['email']
+            image = request.data['image']
+            user_type = request.data['user_type']
+        except:
+            return Response({"Error": "Please provide all the details"})
 
-#         arr = name.split()
-#         name = "".join(arr)
-#         name = name.lower()
+        arr = name.split()
+        name = "".join(arr)
+        name = name.lower()
 
-#         # cam = cv2.VideoCapture(0)
-#         # cv2.namedWindow('Python WebCam Screenshot App')
+        # cam = cv2.VideoCapture(0)
+        # cv2.namedWindow('Python WebCam Screenshot App')
 
-#         # img_counter = 0
+        # img_counter = 0
 
-#         # while True:
-#         #     ret, frame = cam.read()
+        # while True:
+        #     ret, frame = cam.read()
 
-#         #     if not ret:
-#         #         break
+        #     if not ret:
+        #         break
 
-#         #     cv2.imshow('test', frame)
+        #     cv2.imshow('test', frame)
 
-#         #     k = cv2.waitKey(1)
+        #     k = cv2.waitKey(1)
 
-#         #     # if k%256 == 27:
-#         #     #     print("Escape hit , Closing the app")
-#         #     #     break
+        #     # if k%256 == 27:
+        #     #     print("Escape hit , Closing the app")
+        #     #     break
 
-#         #     if k % 256 == 32:
-#         #         # img_name = "E:\\Desktop\\College_Work\\College_Final_Project\\Face\\Face\\media\\Matching.jpg".format(img_counter)
-#         #         img_name = "//home//harshyadav//Desktop//Face-Login-Api//Face_Login_college_Project//media//match.jpg".format(
-#         #             img_counter)
-#         #         cv2.imwrite(img_name, frame)
-#         #         img_counter += 1
-#         #         break
+        #     if k % 256 == 32:
+        #         # img_name = "E:\\Desktop\\College_Work\\College_Final_Project\\Face\\Face\\media\\Matching.jpg".format(img_counter)
+        #         img_name = "//home//harshyadav//Desktop//Face-Login-Api//Face_Login_college_Project//media//match.jpg".format(
+        #             img_counter)
+        #         cv2.imwrite(img_name, frame)
+        #         img_counter += 1
+        #         break
 
-#         # try:
-#         #     file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
-#             # for index, file in enumerate(file_list):
-#             #     if(file['title'].split(".")[0] == name):
-#             #         print(file['id'])
-#             #         print('file downloaded : ', file['title'])
-#             #         file.GetContentFile(file['title'])
-#             # known_image = face_recognition.load_image_file(f"{name}.jpg")
-#             # # unknown_image = face_recognition.load_image_file("media/match.jpg")
-#             # unknown_image = face_recognition.load_image_file(image)
+        # try:
+        #     file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
+            # for index, file in enumerate(file_list):
+            #     if(file['title'].split(".")[0] == name):
+            #         print(file['id'])
+            #         print('file downloaded : ', file['title'])
+            #         file.GetContentFile(file['title'])
+            # known_image = face_recognition.load_image_file(f"{name}.jpg")
+            # # unknown_image = face_recognition.load_image_file("media/match.jpg")
+            # unknown_image = face_recognition.load_image_file(image)
 
-#             # image1_encoding = face_recognition.face_encodings(known_image)[0]
-#             # image2_encoding = face_recognition.face_encodings(unknown_image)[0]
+            # image1_encoding = face_recognition.face_encodings(known_image)[0]
+            # image2_encoding = face_recognition.face_encodings(unknown_image)[0]
 
-#             # results = face_recognition.api.compare_faces(
-#             #     [image1_encoding], image2_encoding, tolerance=0.4)
+            # results = face_recognition.api.compare_faces(
+            #     [image1_encoding], image2_encoding, tolerance=0.4)
 
-#             # if(os.path.exists(f"{name}.jpg")):
-#             #     os.remove(f"{name}.jpg")
+            # if(os.path.exists(f"{name}.jpg")):
+            #     os.remove(f"{name}.jpg")
 
-#             # cam.release()
+            # cam.release()
 
-#             # cv2.destroyAllWindows()
+            # cv2.destroyAllWindows()
 
-#         # except:
-#             # cam.release()
-#             # cv2.destroyAllWindows()
-#             # return Response({'results': 'User details does not match'}, 404)
+        # except:
+            # cam.release()
+            # cv2.destroyAllWindows()
+            # return Response({'results': 'User details does not match'}, 404)
 
-#         # Creating Token for the Logged in user.
-#         if (user_type == 'student'):
+        # Creating Token for the Logged in user.
+        if (user_type == 'student'):
 
-#             try:
-#                 user = student_models.objects.filter(email=email).first()
-#                 print(str(user.image).split("/")[-1]) # type: ignore
-#                 file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
-#                 for index, file in enumerate(file_list):
-#                     if(file['id'] == str(user.image).split("/")[-1]): # type: ignore
-#                         print(index+1,'file downloaded : ', file['title'])
-#                         file.GetContentFile(file['title'])
-#                 known_image = face_recognition.load_image_file(f"{name}.jpg")
-#                 unknown_image = face_recognition.load_image_file(image)
-#                 image1_encoding = face_recognition.face_encodings(known_image)[0]
-#                 image2_encoding = face_recognition.face_encodings(unknown_image)[0]
-#                 results = face_recognition.api.compare_faces([image1_encoding], image2_encoding, tolerance=0.4)
+            try:
+                user = student_models.objects.filter(email=email).first()
+                print(str(user.image).split("/")[-1]) # type: ignore
+                file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
+                for index, file in enumerate(file_list):
+                    if(file['id'] == str(user.image).split("/")[-1]): # type: ignore
+                        print(index+1,'file downloaded : ', file['title'])
+                        file.GetContentFile(file['title'])
+                known_image = face_recognition.load_image_file(f"{name}.jpg")
+                unknown_image = face_recognition.load_image_file(image)
+                image1_encoding = face_recognition.face_encodings(known_image)[0]
+                image2_encoding = face_recognition.face_encodings(unknown_image)[0]
+                results = face_recognition.api.compare_faces([image1_encoding], image2_encoding, tolerance=0.4)
 
-#                 if(os.path.exists(f"{name}.jpg")):
-#                     os.remove(f"{name}.jpg")
+                if(os.path.exists(f"{name}.jpg")):
+                    os.remove(f"{name}.jpg")
 
-#                 if results == [True]:
+                if results == [True]:
 
-#                     if user is None:
-#                         return Response({'Result': "User not found"})
+                    if user is None:
+                        return Response({'Result': "User not found"})
                     
-#                     payload = {
-#                         'id': user.pk,
-#                         'email': user.email,
-#                         'roll_no': user.roll_no,
-#                         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-#                         'iat': datetime.datetime.utcnow(),
-#                     }
+                    payload = {
+                        'id': user.pk,
+                        'email': user.email,
+                        'roll_no': user.roll_no,
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                        'iat': datetime.datetime.utcnow(),
+                    }
 
-#                     token = jwt.encode(payload, 'secret', algorithm='HS256')
+                    token = jwt.encode(payload, 'secret', algorithm='HS256')
 
-#                     # return Response({'Result': results, 'Token': token})
-#                     return Response({
-#                         "message": "Successfully Logged in",
-#                         "id": user.pk,
-#                         "roll_no": user.roll_no,
-#                         "email": user.email,
-#                         "status": user.status,
-#                         "token": token
-#                     })
-#                 else:
-#                     return Response({"Message":"Face does not match"})
-#             except:
-#                 return Response({"Error": "Details does not match"})
+                    # return Response({'Result': results, 'Token': token})
+                    return Response({
+                        "message": "Successfully Logged in",
+                        "id": user.pk,
+                        "roll_no": user.roll_no,
+                        "email": user.email,
+                        "status": user.status,
+                        "token": token
+                    })
+                else:
+                    return Response({"Message":"Face does not match"})
+            except:
+                return Response({"Error": "Details does not match"})
             
-#         elif (user_type == 'teacher'):
+        elif (user_type == 'teacher'):
 
-#             try:
-#                 user = teacher_models.objects.filter(email=email).first()
-#                 file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
-#                 for index, file in enumerate(file_list):
-#                     if(file['id'] == str(user.image).split("/")[-1]): # type: ignore
-#                         print(index+1,'file downloaded : ', file['title'])
-#                         file.GetContentFile(file['title'])
-#                 known_image = face_recognition.load_image_file(f"{name}.jpg")
-#                 unknown_image = face_recognition.load_image_file(image)
-#                 image1_encoding = face_recognition.face_encodings(known_image)[0]
-#                 image2_encoding = face_recognition.face_encodings(unknown_image)[0]
-#                 results = face_recognition.api.compare_faces([image1_encoding], image2_encoding, tolerance=0.4)
+            try:
+                user = teacher_models.objects.filter(email=email).first()
+                file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
+                for index, file in enumerate(file_list):
+                    if(file['id'] == str(user.image).split("/")[-1]): # type: ignore
+                        print(index+1,'file downloaded : ', file['title'])
+                        file.GetContentFile(file['title'])
+                known_image = face_recognition.load_image_file(f"{name}.jpg")
+                unknown_image = face_recognition.load_image_file(image)
+                image1_encoding = face_recognition.face_encodings(known_image)[0]
+                image2_encoding = face_recognition.face_encodings(unknown_image)[0]
+                results = face_recognition.api.compare_faces([image1_encoding], image2_encoding, tolerance=0.4)
 
-#                 if(os.path.exists(f"{name}.jpg")):
-#                     os.remove(f"{name}.jpg")
+                if(os.path.exists(f"{name}.jpg")):
+                    os.remove(f"{name}.jpg")
 
-#                 if results == [True]:  
-#                     if user is None:
-#                         return Response({'Result': "User not found"})
+                if results == [True]:  
+                    if user is None:
+                        return Response({'Result': "User not found"})
 
-#                     payload = {
-#                             'id': user.pk,
-#                             'email': user.email,
-#                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-#                             'iat': datetime.datetime.utcnow(),
-#                         }
+                    payload = {
+                            'id': user.pk,
+                            'email': user.email,
+                            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                            'iat': datetime.datetime.utcnow(),
+                        }
 
-#                     token = jwt.encode(payload, 'secret', algorithm='HS256')
+                    token = jwt.encode(payload, 'secret', algorithm='HS256')
 
-#                     # return Response({'Result': results, 'Token': token})
-#                     return Response({
-#                             "message": "Successfully Logged in",
-#                             "id": user.pk,
-#                             "email": user.email,
-#                             "status": user.status,
-#                             "token": token
-#                         })
-#                 else:
-#                     return Response({"Message":"Face does not match"})
-#             except:
-#                 return Response({"Error": "Details does not match"})
+                    # return Response({'Result': results, 'Token': token})
+                    return Response({
+                            "message": "Successfully Logged in",
+                            "id": user.pk,
+                            "email": user.email,
+                            "status": user.status,
+                            "token": token
+                        })
+                else:
+                    return Response({"Message":"Face does not match"})
+            except:
+                return Response({"Error": "Details does not match"})
             
-#         else:
-#             return Response({"Error": "Please provide a valid user type"})
+        else:
+            return Response({"Error": "Please provide a valid user type"})
 
 
 

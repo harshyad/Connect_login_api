@@ -1,5 +1,5 @@
-import cv2
-import face_recognition
+# import cv2
+# import face_recognition
 import os
 import jwt
 import datetime
@@ -198,9 +198,9 @@ def rename_image(user_type,email,name):
 
 # Create your views here.
 
-@api_view(['POST'])
-# For Comparing the image taken and the image stored in the database.
-def facelogin(request):
+# @api_view(['POST'])
+# # For Comparing the image taken and the image stored in the database.
+# def facelogin(request):
 
     if request.method == 'POST':
 

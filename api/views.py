@@ -409,7 +409,7 @@ def Register(request):
                             roll_no = serializer.data['roll_no']
                             password = serializer.data['password']
                             user_type = serializer.data['user_type']
-                            sendMail(user_type, name, roll_no, password, email)
+                            # sendMail(user_type, name, roll_no, password, email)
                             return Response({"Message": 'Done', "data": serializer.data})
                         return Response(serializer.errors)
 
@@ -422,7 +422,7 @@ def Register(request):
                             password = serializer.data['password']
                             user_type = serializer.data['user_type']
                             print(serializer.data['user_type'])
-                            sendMail(user_type, name, email, password)
+                            # sendMail(user_type, name, email, password)
                             return Response({"Message": 'Done', "data": serializer.data})
                         return Response(serializer.errors)
                 except:

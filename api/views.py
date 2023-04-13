@@ -111,18 +111,19 @@ def sendMail(*args):
 def loginlogic(password, user):
 
     if user is None:
-        return Response({"msg": 'User Not Found'})
+        return Response({"status":False,"msg": 'User Not Found'})
 
     # password = password.encode('utf-8')
     # bcrypt.checkpw(password,user.password)
 
     if (user.password != password):
-        return Response({"msg": "Incorrect Password"})
+        return Response({"status":False,"msg": "Incorrect Password"})
 
     else:
 
         try:
-            if (user.roll_no):
+
+            try:
                 payload = {
                     'id': user.id,
                     'email': user.email,
@@ -133,29 +134,33 @@ def loginlogic(password, user):
 
                 token = jwt.encode(payload, 'secret', algorithm='HS256')
                 return Response({
+                    "status":True,
                     "message": "Successfully Logged in",
                     "id": user.pk,
                     "roll_no": user.roll_no,
                     "email": user.email,
-                    "status": user.status,
+                    "profilestatus": user.status,
+                    "token": token
+                })
+            
+            except:
+                payload = {
+                    'id': user.id,
+                    'email': user.email,
+                    'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                    'iat': datetime.datetime.utcnow(),
+                }
+                token = jwt.encode(payload, 'secret', algorithm='HS256')
+                return Response({
+                    "status":True,
+                    "message": "Successfully Logged in",
+                    "id": user.pk,
+                    "email": user.email,
+                    "profilestatus": user.status,
                     "token": token
                 })
         except:
-            payload = {
-                'id': user.id,
-                'email': user.email,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-                'iat': datetime.datetime.utcnow(),
-            }
-
-            token = jwt.encode(payload, 'secret', algorithm='HS256')
-            return Response({
-                "message": "Successfully Logged in",
-                "id": user.pk,
-                "email": user.email,
-                "status": user.status,
-                "token": token
-            })
+            return Response({"status":False,"msg":"Some Error occured"})
 
 def saveImage(name):
     directory = "media"
@@ -373,20 +378,30 @@ def rename_image(user_type,email,name):
 @api_view(['POST'])
 # Use for login via username and password
 def login(request):
+    try:
+        if (request.data['user_type'] == "student"):
+            try:
+                roll_no = request.data['roll_no']
+                password = request.data['password']
+            except:
+                return Response({"status":True,"msg":"Please provide all the details"})
+            user = student_models.objects.filter(roll_no=roll_no).first()
+            response = loginlogic(password, user)
+            return response
 
-    if (request.data['user_type'] == "student"):
-        roll_no = request.data['roll_no']
-        password = request.data['password']
-        user = student_models.objects.filter(roll_no=roll_no).first()
-        response = loginlogic(password, user)
-        return response
-
-    if (request.data['user_type'] == "teacher"):
-        email = request.data['email']
-        password = request.data['password']
-        user = teacher_models.objects.filter(email=email).first()
-        response = loginlogic(password, user)
-        return response
+        if (request.data['user_type'] == "teacher"):
+            try:
+                email = request.data['email']
+                password = request.data['password']
+            except:
+                return Response({"status":True,"msg":"Please provide all the details"})
+            user = teacher_models.objects.filter(email=email).first()
+            response = loginlogic(password, user)
+            return response
+        else:
+            return Response({"status":False,"msg":"Please provide a valid user type"})
+    except:
+        return Response({"status":True,"msg":"Some error occured"})
 
 
 @api_view(['POST'])
@@ -403,15 +418,14 @@ def Register(request):
                         serializer = Imageserializer(data=request.data)
                         if serializer.is_valid():
                             serializer.save()
-                            print("Hello")
                             name = serializer.data['name']
                             email = serializer.data['email']
                             roll_no = serializer.data['roll_no']
                             password = serializer.data['password']
                             user_type = serializer.data['user_type']
                             # sendMail(user_type, name, roll_no, password, email)
-                            return Response({"Message": 'Done', "data": serializer.data})
-                        return Response(serializer.errors)
+                            return Response({"status": True, "data": serializer.data})
+                        return Response({"status":False,"error":serializer.errors})
 
                     if (request.data['user_type'] == "teacher"):
                         serializer = teacherserializer(data=request.data)
@@ -423,23 +437,23 @@ def Register(request):
                             user_type = serializer.data['user_type']
                             print(serializer.data['user_type'])
                             # sendMail(user_type, name, email, password)
-                            return Response({"Message": 'Done', "data": serializer.data})
-                        return Response(serializer.errors)
+                            return Response({"status": True,"data": serializer.data})
+                        return Response({"status":False,"error":serializer.errors})
+                    else:
+                        return Response({"status":False,"msg": "Please select the usertype first"})
                 except:
-                    return Response({"msg": "Some error occured"})
-
+                    return Response({"status":False,"msg": "Some error occured"})
             else:
-                return Response({"msg": "You are not allowed to register"})
+                return Response({"status":False, "msg": "You are not allowed to register"})
         except:
-            return Response({"msg": "Please select the usertype first"})
+            return Response({"status":False, "msg": "Please select the usertype first"})
 
 
 @api_view(['POST', 'PUT', 'PATCH'])
 # Use for updating the existing student model
 def update(request):
     if request.method == 'PUT':
-        # try:
-
+        try:
             token = request.headers["token"]
             if not token:
                 return Response({"error": "User not authenticated"}, 401)
@@ -460,6 +474,7 @@ def update(request):
                     data.status = "true"
             except:
                 return Response({
+                    "status":False,
                     "Error": "User with this email does not exist"
                 }, 404)
             if (request.data['user_type'] == "student"):
@@ -472,8 +487,8 @@ def update(request):
                     user_type = serializer.data['user_type']
                     saveImage(name)
                     rename_image(user_type,email,name)
-                    return Response({"msg": "done"})
-                return Response(serializer.errors)
+                    return Response({"status":True})
+                return Response({"status":False,"error":serializer.errors})
             if(request.data['user_type'] == "teacher"):
                 serializer = teacherserializer(
                 data, data=request.data, partial=True)
@@ -484,13 +499,12 @@ def update(request):
                     user_type = serializer.data['user_type']
                     saveImage(name)
                     rename_image(user_type,email,name)
-                    return Response({"msg": "done"})
-                return Response(serializer.errors)
-
+                    return Response({"status":True})
+                return Response({"status":False,"error":serializer.errors})
+            return Response()
         
-            return Response({"msg":"done"})
-        # except:
-        #     return Response({"msg": "Some error occured"})
+        except:
+            return Response({"status":False,"msg": "Some error occured"})
 
 
 @api_view(['POST'])
@@ -506,7 +520,7 @@ def view(request):
                 user_type = request.data['user_type']
 
             except:
-                return Response({"Error": "Please provide all the details"})
+                return Response({"status":False,"Error": "Please provide all the details"})
 
             if (user_type == 'student'):
                 if id != None:
@@ -514,10 +528,11 @@ def view(request):
                         data = student_models.objects.get(id=id)
                     except:
                         return Response({
+                            "status":False,
                             "Error": "User with this id does not exist"
                         }, 404)
                     serializer = Imageserializer(data)
-                    return Response(serializer.data, 200)
+                    return Response({"status":True,"data":serializer.data}, 200)
             elif (user_type == 'teacher'):
 
                 if id != None:
@@ -525,14 +540,15 @@ def view(request):
                         data = teacher_models.objects.get(id=id)
                     except:
                         return Response({
+                            "status":False,
                             "Error": "User with this id does not exist"
                         }, 404)
                     serializer = Imageserializer(data)
-                    return Response(serializer.data, 200)
+                    return Response({"status":True,"data":serializer.data}, 200)
             else:
-                return Response({"Error": "Please provide valid user_type"})
+                return Response({"status":False,"Error": "Please provide valid user_type"})
         else:
             data = student_models.objects.all()
             serializer = Imageserializer(data, many=True)
             Total_Records = len(serializer.data)
-            return Response({"records": serializer.data, "Total records": Total_Records}, 200)
+            return Response({"status":True,"records": serializer.data, "Total records": Total_Records}, 200)

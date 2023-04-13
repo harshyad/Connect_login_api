@@ -98,7 +98,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'test1',
+        'NAME': 'test',
         'CLIENT': {
             'host': "mongodb+srv://Harsh:test@connect.g3ekpv7.mongodb.net/?retryWrites=true&w=majority"
         },   

@@ -91,7 +91,8 @@ def sendMail(*args):
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.starttls()
     # msg = "Hello"
-    s.login("connect.lms.developers@gmail.com", "xfmsbsfletutkkcx")
+    # s.login("connect.lms.developers@gmail.com", "xfmsbsfletutkkcx")
+    s.login("harshyadav78200@gmail.com", "lndspigcugtodbqv")
     
     if (pk == 'Rollno'):
         print("Logged in")

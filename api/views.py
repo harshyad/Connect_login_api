@@ -1,5 +1,5 @@
-# import cv2
-# import face_recognition
+import cv2
+import face_recognition
 import os
 import jwt
 import datetime
@@ -202,9 +202,9 @@ def rename_image(user_type,email,name):
 
 # Create your views here.
 
-# @api_view(['POST'])
-# # For Comparing the image taken and the image stored in the database.
-# def facelogin(request):
+@api_view(['POST'])
+# For Comparing the image taken and the image stored in the database.
+def facelogin(request):
 
     if request.method == 'POST':
 
@@ -283,6 +283,7 @@ def rename_image(user_type,email,name):
                 user = student_models.objects.filter(email=email).first()
                 print(str(user.image).split("/")[-1]) # type: ignore
                 file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
+                print("hello")
                 for index, file in enumerate(file_list):
                     if(file['id'] == str(user.image).split("/")[-1]): # type: ignore
                         print(index+1,'file downloaded : ', file['title'])
@@ -310,20 +311,19 @@ def rename_image(user_type,email,name):
                     }
 
                     token = jwt.encode(payload, 'secret', algorithm='HS256')
-
                     # return Response({'Result': results, 'Token': token})
+
+                    serializer = Imageserializer(user)
                     return Response({
+                        "status":True,
                         "message": "Successfully Logged in",
-                        "id": user.pk,
-                        "roll_no": user.roll_no,
-                        "email": user.email,
-                        "status": user.status,
+                        "user_data":serializer.data,
                         "token": token
                     })
                 else:
-                    return Response({"Message":"Face does not match"})
+                    return Response({"status":False, "Message":"Face does not match"})
             except:
-                return Response({"Error": "Details does not match"})
+                return Response({"status":False, "Error": "Details does not match"})
             
         elif (user_type == 'teacher'):
 
@@ -357,20 +357,21 @@ def rename_image(user_type,email,name):
                     token = jwt.encode(payload, 'secret', algorithm='HS256')
 
                     # return Response({'Result': results, 'Token': token})
+                    print("Hello")
+                    serializer = teacherserializer(user)
                     return Response({
+                            "status":True,
                             "message": "Successfully Logged in",
-                            "id": user.pk,
-                            "email": user.email,
-                            "status": user.status,
+                            "user_data":serializer.data,
                             "token": token
                         })
                 else:
-                    return Response({"Message":"Face does not match"})
+                    return Response({"status":False, "Message":"Face does not match"})
             except:
-                return Response({"Error": "Details does not match"})
+                return Response({"status":False, "Error": "Details does not match"})
             
         else:
-            return Response({"Error": "Please provide a valid user type"})
+            return Response({"status":False, "Error": "Please provide a valid user type"})
 
 
 

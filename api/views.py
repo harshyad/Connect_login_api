@@ -130,7 +130,7 @@ def loginlogic(password, user):
                         'id': user.id,
                         'email': user.email,
                         'roll_no': user.roll_no,
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
                         'iat': datetime.datetime.utcnow(),
                     }
                     serializer = Imageserializer(user)
@@ -145,7 +145,7 @@ def loginlogic(password, user):
                     payload = {
                         'id': user.id,
                         'email': user.email,
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
                         'iat': datetime.datetime.utcnow(),
                     }
                     token = jwt.encode(payload, 'secret', algorithm='HS256')

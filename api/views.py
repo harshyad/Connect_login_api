@@ -1,5 +1,7 @@
 import cv2
-import face_recognition
+# import face_recognition
+import sys
+import dlib
 import os
 import jwt
 import datetime
@@ -16,6 +18,16 @@ from email.mime.text import MIMEText
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 
+# predictor_path = sys.argv[1]
+# face_rec_model_path = sys.argv[2]
+# faces_folder_path = sys.argv[3]
+
+# detector = dlib.get_frontal_face_detector()
+# sp = dlib.shape_predictor(predictor_path)
+# facerec = dlib.face_recognition_model_v1(face_rec_model_path)
+
+face_rec_model_path = "dlib_face_recognition_resnet_model_v1.dat"  # Update with the correct file path
+face_recognition = dlib.face_recognition_model_v1(face_rec_model_path)
 
 # Local Imports
 from api.serializers import Imageserializer, teacherserializer
@@ -294,7 +306,7 @@ def facelogin(request):
                 image2_encoding = face_recognition.face_encodings(unknown_image)[0]
                 results = face_recognition.api.compare_faces([image1_encoding], image2_encoding, tolerance=0.4)
 
-                if(os.path.exists(f"{name}.jpg")):
+                if(os.path.exists(f"{name}.jpg")):  
                     os.remove(f"{name}.jpg")
 
                 if user is None:

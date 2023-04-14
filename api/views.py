@@ -1,7 +1,7 @@
 import cv2
-# import face_recognition
-import sys
-import dlib
+import face_recognition
+# import sys
+# import dlib
 import os
 import jwt
 import datetime
@@ -26,8 +26,8 @@ from pydrive.drive import GoogleDrive
 # sp = dlib.shape_predictor(predictor_path)
 # facerec = dlib.face_recognition_model_v1(face_rec_model_path)
 
-face_rec_model_path = "dlib_face_recognition_resnet_model_v1.dat"  # Update with the correct file path
-face_recognition = dlib.face_recognition_model_v1(face_rec_model_path)
+# face_rec_model_path = "dlib_face_recognition_resnet_model_v1.dat"  # Update with the correct file path
+# face_recognition = dlib.face_recognition_model_v1(face_rec_model_path)
 
 # Local Imports
 from api.serializers import Imageserializer, teacherserializer

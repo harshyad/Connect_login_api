@@ -94,12 +94,12 @@ def sendMail(*args):
     s.login("connect.lms.developers@gmail.com", "xfmsbsfletutkkcx")
     
     if (pk == 'Rollno'):
-        print("Logged IN")
+        print("Logged in")
         s.sendmail("connect.lms.developers@gmail.com",
                    args[4], msg)
         print("Sent mail")
     elif (pk == 'Email'):
-        print("Logged IN")
+        print("Logged in")
         s.sendmail("connect.lms.developers@gmail.com",
                    args[2], msg)
         print("Sent mail")
@@ -124,41 +124,40 @@ def loginlogic(password, user):
         try:
 
             try:
-                payload = {
-                    'id': user.id,
-                    'email': user.email,
-                    'roll_no': user.roll_no,
-                    'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-                    'iat': datetime.datetime.utcnow(),
-                }
+                if(user.user_type == "student"):
 
-                token = jwt.encode(payload, 'secret', algorithm='HS256')
-                return Response({
-                    "status":True,
-                    "message": "Successfully Logged in",
-                    "id": user.pk,
-                    "roll_no": user.roll_no,
-                    "email": user.email,
-                    "profilestatus": user.status,
-                    "token": token
-                })
-            
+                    payload = {
+                        'id': user.id,
+                        'email': user.email,
+                        'roll_no': user.roll_no,
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                        'iat': datetime.datetime.utcnow(),
+                    }
+                    serializer = Imageserializer(user)
+                    token = jwt.encode(payload, 'secret', algorithm='HS256')
+                    return Response({
+                        "status":True,
+                        "message": "Successfully Logged in",
+                        "user_data":serializer.data,
+                        "token":token
+                    })
+                else:
+                    payload = {
+                        'id': user.id,
+                        'email': user.email,
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                        'iat': datetime.datetime.utcnow(),
+                    }
+                    token = jwt.encode(payload, 'secret', algorithm='HS256')
+                    serializer = teacherserializer(user)
+                    return Response({
+                        "status":True,
+                        "message": "Successfully Logged in",
+                        "user_data":serializer.data,
+                        "token": token
+                    })
             except:
-                payload = {
-                    'id': user.id,
-                    'email': user.email,
-                    'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-                    'iat': datetime.datetime.utcnow(),
-                }
-                token = jwt.encode(payload, 'secret', algorithm='HS256')
-                return Response({
-                    "status":True,
-                    "message": "Successfully Logged in",
-                    "id": user.pk,
-                    "email": user.email,
-                    "profilestatus": user.status,
-                    "token": token
-                })
+                return Response({"status":False,"msg":"Error"})
         except:
             return Response({"status":False,"msg":"Some Error occured"})
 
@@ -411,7 +410,6 @@ def Register(request):
     if request.method == 'POST':
         try:
             user = request.query_params['user']
-            print(user)
             if (user == "admin"):
                 try:
                     if (request.data['user_type'] == "student"):

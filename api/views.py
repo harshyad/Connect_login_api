@@ -297,10 +297,10 @@ def facelogin(request):
                 if(os.path.exists(f"{name}.jpg")):
                     os.remove(f"{name}.jpg")
 
+                if user is None:
+                    return Response({'Result': "User not found"})
+                
                 if results == [True]:
-
-                    if user is None:
-                        return Response({'Result': "User not found"})
                     
                     payload = {
                         'id': user.pk,
@@ -343,9 +343,11 @@ def facelogin(request):
                 if(os.path.exists(f"{name}.jpg")):
                     os.remove(f"{name}.jpg")
 
+                if user is None:
+                    return Response({'Result': "User not found"})
+                
                 if results == [True]:  
-                    if user is None:
-                        return Response({'Result': "User not found"})
+                    
 
                     payload = {
                             'id': user.pk,

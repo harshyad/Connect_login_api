@@ -474,7 +474,7 @@ def update(request):
                 return Response({
                     "status":False,
                     "Error": "User with this email does not exist"
-                }, 404)
+                })
             if (request.data['user_type'] == "student"):
                 serializer = Imageserializer(
                 data, data=request.data, partial=True)
@@ -485,7 +485,7 @@ def update(request):
                     user_type = serializer.data['user_type']
                     saveImage(name)
                     rename_image(user_type,email,name)
-                    return Response({"status":True})
+                    return Response({"status":True,"user_data":serializer.data})
                 return Response({"status":False,"error":serializer.errors})
             if(request.data['user_type'] == "teacher"):
                 serializer = teacherserializer(
@@ -497,7 +497,7 @@ def update(request):
                     user_type = serializer.data['user_type']
                     saveImage(name)
                     rename_image(user_type,email,name)
-                    return Response({"status":True})
+                    return Response({"status":True,"user_data":serializer.data})
                 return Response({"status":False,"error":serializer.errors})
             return Response()
         

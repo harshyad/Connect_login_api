@@ -130,7 +130,7 @@ def loginlogic(password, user):
                         'id': user.id,
                         'email': user.email,
                         'roll_no': user.roll_no,
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
                         'iat': datetime.datetime.utcnow(),
                     }
                     serializer = Imageserializer(user)
@@ -145,7 +145,7 @@ def loginlogic(password, user):
                     payload = {
                         'id': user.id,
                         'email': user.email,
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
                         'iat': datetime.datetime.utcnow(),
                     }
                     token = jwt.encode(payload, 'secret', algorithm='HS256')
@@ -305,7 +305,7 @@ def rename_image(user_type,email,name):
                         'id': user.pk,
                         'email': user.email,
                         'roll_no': user.roll_no,
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
                         'iat': datetime.datetime.utcnow(),
                     }
 
@@ -350,13 +350,14 @@ def rename_image(user_type,email,name):
                     payload = {
                             'id': user.pk,
                             'email': user.email,
-                            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
                             'iat': datetime.datetime.utcnow(),
                         }
 
                     token = jwt.encode(payload, 'secret', algorithm='HS256')
 
                     # return Response({'Result': results, 'Token': token})
+                    
                     return Response({
                             "message": "Successfully Logged in",
                             "id": user.pk,
@@ -527,7 +528,7 @@ def view(request):
                 return Response({"status":True,"user_data":serializer.data})
             
         except:
-            
+
             return Response({"status":False,"msg":"Some error occured"})
 
     if request.method == 'POST':

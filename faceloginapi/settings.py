@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from corsheaders.defaults import default_headers
 from pathlib import Path
 import os
 
@@ -83,6 +84,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'faceloginapi.wsgi.application'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "token",
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

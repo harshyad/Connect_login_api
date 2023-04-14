@@ -505,9 +505,30 @@ def update(request):
             return Response({"status":False,"msg": "Some error occured"})
 
 
-@api_view(['POST'])
+@api_view(['POST','GET'])
 # Use for viewing the data of registered user
 def view(request):
+
+    if request.method == 'GET':
+
+        try:
+
+            token = request.headers['token']
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+
+            try :
+                data = student_models.objects.get(roll_no=payload['roll_no'])
+                serializer = Imageserializer(data)
+                return Response({"status":True,"user_data":serializer.data})
+            
+            except:
+                data = teacher_models.objects.get(email=payload['email'])
+                serializer = teacherserializer(data)
+                return Response({"status":True,"user_data":serializer.data})
+            
+        except:
+            
+            return Response({"status":False,"msg":"Some error occured"})
 
     if request.method == 'POST':
 

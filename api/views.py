@@ -436,8 +436,18 @@ def Register(request):
                             email = serializer.data['email']
                             password = serializer.data['password']
                             user_type = serializer.data['user_type']
-                            sendMail(user_type, name, email, password)
+                            print("Hello")
+                            try:
+                                sendMail(user_type, name, email, password)
+                            except:
+                                email = serializer.data['email']
+                                print(email)
+                                data = teacher_models.objects.get(email=email)
+                                data.delete()
+                                return Response({"status":False,"msg":"Please enter valid email"})
+                            
                             return Response({"status": True,"data": serializer.data})
+                        
                         return Response({"status":False,"error":serializer.errors})
                     else:
                         return Response({"status":False,"msg": "Please select the usertype first"})

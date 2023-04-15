@@ -90,9 +90,10 @@ def sendMail(*args):
     msg = message.as_string()
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.starttls()
-    app_password = os.environ.get('APP_PASSWORD')
-    s.login("harshyadav78200@gmail.com", app_password)
     
+    app_password = os.environ.get('APP_PASSWORD')
+    s.login("connect.lms.developers@gmail.com", app_password)
+
     if (pk == 'Rollno'):
         print("Logged in")
         s.sendmail("harshyadav78200@gmail.com",

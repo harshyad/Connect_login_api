@@ -90,7 +90,8 @@ def sendMail(*args):
     msg = message.as_string()
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.starttls()
-
+    
+    print("Hello")
     app_password = os.environ.get('APP_PASSWORD')
     s.login("connect.lms.developers@gmail.com", app_password)
 
@@ -390,7 +391,7 @@ def login(request):
             response = loginlogic(password, user)
             return response
 
-        if (request.data['user_type'] == "teacher"):
+        if (request.data['user_type'] == "teacher" or request.data['user_type'] == "admin"):
             try:
                 email = request.data['email']
                 password = request.data['password']
@@ -423,7 +424,7 @@ def Register(request):
                             roll_no = serializer.data['roll_no']
                             password = serializer.data['password']
                             user_type = serializer.data['user_type']
-                            # sendMail(user_type, name, roll_no, password, email)
+                            sendMail(user_type, name, roll_no, password, email)
                             return Response({"status": True, "data": serializer.data})
                         return Response({"status":False,"error":serializer.errors})
 
@@ -435,7 +436,7 @@ def Register(request):
                             email = serializer.data['email']
                             password = serializer.data['password']
                             user_type = serializer.data['user_type']
-                            # sendMail(user_type, name, email, password)
+                            sendMail(user_type, name, email, password)
                             return Response({"status": True,"data": serializer.data})
                         return Response({"status":False,"error":serializer.errors})
                     else:
@@ -465,7 +466,7 @@ def update(request):
                     data = student_models.objects.get(
                         email=payload['email'])
                     data.status = "true"
-                if (request.data['user_type'] == "teacher"):
+                if (request.data['user_type'] == "teacher" or request.data['user_type'] == "admin"):
                     payload = jwt.decode(
                         token, 'secret', algorithms=['HS256'])
                     data = teacher_models.objects.get(
@@ -488,7 +489,8 @@ def update(request):
                     rename_image(user_type,email,name)
                     return Response({"status":True,"user_data":serializer.data})
                 return Response({"status":False,"error":serializer.errors})
-            if(request.data['user_type'] == "teacher"):
+            
+            if(request.data['user_type'] == "teacher" or request.data['user_type'] == "admin"):
                 serializer = teacherserializer(
                 data, data=request.data, partial=True)
                 if serializer.is_valid():

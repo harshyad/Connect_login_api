@@ -1,7 +1,5 @@
 import cv2
 import face_recognition
-# import sys
-# import dlib
 import os
 import jwt
 import datetime

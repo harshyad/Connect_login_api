@@ -427,7 +427,7 @@ def Register(request):
                             return Response({"status": True, "data": serializer.data})
                         return Response({"status":False,"error":serializer.errors})
 
-                    if (request.data['user_type'] == "teacher"):
+                    if (request.data['user_type'] == "teacher" or request.data['user_type'] == "admin"):
                         serializer = teacherserializer(data=request.data)
                         if serializer.is_valid():
                             serializer.save()
@@ -435,7 +435,6 @@ def Register(request):
                             email = serializer.data['email']
                             password = serializer.data['password']
                             user_type = serializer.data['user_type']
-                            print(serializer.data['user_type'])
                             sendMail(user_type, name, email, password)
                             return Response({"status": True,"data": serializer.data})
                         return Response({"status":False,"error":serializer.errors})

@@ -1,7 +1,7 @@
 # Install Dependencies
 pip install -r requirements.txt
 
-apt install build-essential cmake libopenblas-dev liblapack-dev libx11-dev libgtk-3-dev
+sudo apt-get install build-essential cmake libopenblas-dev liblapack-dev libx11-dev libgtk-3-dev
 
 # Install libraries
 pip install dlib==19.24.1

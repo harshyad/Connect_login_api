@@ -1,5 +1,8 @@
 # Install Dependencies
 # docker-compose up -d
+
+pip install docker
+
 docker info
 
 # pip install -r requirements.txt

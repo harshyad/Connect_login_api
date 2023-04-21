@@ -22,10 +22,19 @@ USER_CHOICES = (
 
 def name_image(instance,filename):
     name = instance.name
+    email = instance.email
+    arr1 = email.split("@")
     arr = name.split()
     name = "".join(arr)
     name = name.lower()
-    return name + '.jpg'
+    return arr1[0].lower() + '.jpg'
+
+def name_profile_image(instance,filename):
+    name = instance.name
+    email = instance.email
+    arr1 = email.split("@")
+    email = arr1[0].lower()
+    return email + 'profile' + '.jpg'
 
 def generatepass():
     lower = "abcdefghijklmnopqrstuvwxyz"
@@ -58,6 +67,7 @@ class student_models(models.Model):
     state=models.CharField(max_length=50,default='',blank=True)
     country=models.CharField(max_length=50,default='',blank=True)
     status=models.CharField(max_length=20,default='false',blank=True)
+    profile_image = models.ImageField(upload_to=name_profile_image, blank=True)
     image = models.ImageField(upload_to=name_image, blank=True)
 
     # def save(self, *args, **kwargs):
@@ -88,4 +98,5 @@ class teacher_models(models.Model):
     state=models.CharField(max_length=50,default='',blank=True)
     country=models.CharField(max_length=50,default='',blank=True)
     status=models.CharField(max_length=20,default='false',blank=True)
+    profile_image = models.ImageField(upload_to=name_profile_image, blank=True)
     image = models.ImageField(upload_to=name_image, blank=True)

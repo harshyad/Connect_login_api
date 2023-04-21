@@ -65,7 +65,7 @@ def sendMail(*args):
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="javascript:void(0)" style="text-decoration: none;display: inline-block;min-width: 100px;text-align: center;padding: 10px 30px;margin: 30px auto;background-color: #1f74ca; color: white; border-radius: 10px; transition: all 0.3s ease;">Login</a>    
+                                        <a href="https://connect-lms.netlify.app/" style="text-decoration: none;display: inline-block;min-width: 100px;text-align: center;padding: 10px 30px;margin: 30px auto;background-color: #1f74ca; color: white; border-radius: 10px; transition: all 0.3s ease;">Login</a>    
                                     </td>
                                 </tr>
                             </tbody>
@@ -163,40 +163,60 @@ def loginlogic(password, user):
         except:
             return Response({"status":False,"msg":"Some Error occured"})
 
-def saveImage(name):
+def saveImage(name,email):
     directory = "media"
     for f in os.listdir(directory):
+        arr1 = email.split("@")
         arr = name.split()
         name = "".join(arr)
         name = name.lower()
-        if(f.split(".")[0]==name):
+        email = arr1[0].lower()
+        if(f.split(".")[0]==email):
             filename = os.path.join(directory,f)
             gfile = drive.CreateFile({'parents' : [{'id' : folder}], 'title' : f})
             gfile.SetContentFile(filename)
             gfile.Upload()
-            shutil.rmtree('media', ignore_errors=False)
-            return
-        else:
-            continue
+            print("Saveimage")
+        elif(f.split(".")[0]==email+'profile'):
+            filename = os.path.join(directory,f)
+            gfile = drive.CreateFile({'parents' : [{'id' : folder}], 'title' : f})
+            gfile.SetContentFile(filename)
+            gfile.Upload()
+            print("saveprofile_image")
+
+    shutil.rmtree('media', ignore_errors=False)
     return
-        
+
 
 def rename_image(user_type,email,name):
+    arr1 = email.split("@")
     arr = name.split()
     name = "".join(arr)
     name = name.lower()
+    eml = arr1[0].lower()
+    print(eml)
+
     if(user_type == "student"):
         data = student_models.objects.get(email=email)
     else:
         data = teacher_models.objects.get(email=email)
+
     fid = ""
     file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
+
     for index, file in enumerate(file_list):
-        if(file['title'].split(".")[0] == name):
+
+        if(file['title'].split(".")[0] == eml):
+            print("Renamed image")
             fid = file['id']
-            data.image = f"https://drive.google.com/file/d/{fid}" # type: ignore
+            data.image = f"https://drive.google.com/uc?export=view&id={fid}" # type: ignore
             data.save()
-            return
+
+        elif(file['title'].split(".")[0] == eml+"profile"):
+            print("Renamed Profile image")
+            fid = file['id']
+            data.profile_image = f"https://drive.google.com/uc?export=view&id={fid}" # type: ignore
+            data.save()
         else:
             continue
     return
@@ -495,7 +515,7 @@ def update(request):
                     name = serializer.data['name']
                     email = serializer.data['email']
                     user_type = serializer.data['user_type']
-                    saveImage(name)
+                    saveImage(name,email)
                     rename_image(user_type,email,name)
                     return Response({"status":True,"user_data":serializer.data})
                 return Response({"status":False,"error":serializer.errors})
@@ -508,7 +528,7 @@ def update(request):
                     name = serializer.data['name']
                     email = serializer.data['email']
                     user_type = serializer.data['user_type']
-                    saveImage(name)
+                    saveImage(name,email)
                     rename_image(user_type,email,name)
                     return Response({"status":True,"user_data":serializer.data})
                 return Response({"status":False,"error":serializer.errors})

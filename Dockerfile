@@ -1,30 +1,25 @@
-FROM python:3.9
+# FROM python:3.10
+FROM python:3.10-slim-buster
+
 
 WORKDIR /app
 
+
 COPY requirements.txt .
 
-RUN apt-get update
-RUN apt-get upgrade
-# RUN apt-get install -y apt-utils
-# RUN apt-get install -y dialog
-# RUN apt-get install -y python3-pkg-resources 
-# RUN apt-get --reinstall install -y python3-pkg-resources
-# RUN apt-get install -y python3-setuptools 
-# RUN apt-get install -y python3-wheel 
-# RUN apt-get install -y python3-pip
 
+RUN apt-get update \
+    && apt-get -y upgrade \
+    && apt-get install -y build-essential cmake \
+    && apt-get install -y libopenblas-dev liblapack-dev \
+    && apt-get install -y libx11-dev libgtk-3-dev \
+    && pip install cmake==3.26.1 \
+    && pip install -r requirements.txt
 
-RUN apt-get update
-RUN apt-get install -y build-essential cmake
-RUN apt-get install -y libopenblas-dev liblapack-dev
-RUN apt-get install -y libx11-dev libgtk-3-dev
-# RUN apt-get install -y python3-dev python3-pip
-
-RUN pip install cmake==3.26.1
-
-RUN pip install -r requirements.txt
 
 COPY . .
+
+
+EXPOSE 8000
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

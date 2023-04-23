@@ -69,6 +69,7 @@ class student_models(models.Model):
     status=models.CharField(max_length=20,default='false',blank=True)
     profile_image = models.ImageField(upload_to=name_profile_image, blank=True)
     image = models.ImageField(upload_to=name_image, blank=True)
+    
 
     # def save(self, *args, **kwargs):
     #     password = self.password
@@ -78,6 +79,7 @@ class student_models(models.Model):
     #     self.password = hash
     #     print(self.password)
     #     super(ImageModel, self).save()
+
 
 class teacher_models(models.Model):
 

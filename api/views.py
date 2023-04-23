@@ -495,13 +495,13 @@ def update(request):
                         token, 'secret', algorithms=['HS256'])
                     data = student_models.objects.get(
                         email=payload['email'])
-                    data.status = "true"
+                    data.status = True
                 if (request.data['user_type'] == "teacher" or request.data['user_type'] == "admin"):
                     payload = jwt.decode(
                         token, 'secret', algorithms=['HS256'])
                     data = teacher_models.objects.get(
                         email=payload['email'])
-                    data.status = "true"
+                    data.status = True
             except:
                 return Response({
                     "status":False,
@@ -512,12 +512,16 @@ def update(request):
                 data, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
-                    name = serializer.data['name']
-                    email = serializer.data['email']
-                    user_type = serializer.data['user_type']
-                    saveImage(name,email)
-                    rename_image(user_type,email,name)
-                    return Response({"status":True,"user_data":serializer.data})
+                    try:
+                        if(request.data['image']):
+                            name = serializer.data['name']
+                            email = serializer.data['email']
+                            user_type = serializer.data['user_type']
+                            saveImage(name,email)
+                            rename_image(user_type,email,name)
+                    except:
+                        return Response({"status":True,"user_data":serializer.data})
+                    
                 return Response({"status":False,"error":serializer.errors})
             
             if(request.data['user_type'] == "teacher" or request.data['user_type'] == "admin"):
@@ -525,13 +529,18 @@ def update(request):
                 data, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
-                    name = serializer.data['name']
-                    email = serializer.data['email']
-                    user_type = serializer.data['user_type']
-                    saveImage(name,email)
-                    rename_image(user_type,email,name)
-                    return Response({"status":True,"user_data":serializer.data})
+                    try:
+                        if(request.data['image']):
+                            name = serializer.data['name']
+                            email = serializer.data['email']
+                            user_type = serializer.data['user_type']
+                            saveImage(name,email)
+                            rename_image(user_type,email,name)
+                    except:
+                        return Response({"status":True,"user_data":serializer.data})
+                    
                 return Response({"status":False,"error":serializer.errors})
+            
             return Response()
         
         except:

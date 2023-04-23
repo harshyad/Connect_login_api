@@ -5,6 +5,7 @@ import os
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 
+
 gauth = GoogleAuth()
 drive = GoogleDrive(gauth)
 
@@ -66,10 +67,13 @@ class student_models(models.Model):
     city=models.CharField(max_length=50,default='',blank=True)
     state=models.CharField(max_length=50,default='',blank=True)
     country=models.CharField(max_length=50,default='',blank=True)
-    status=models.CharField(max_length=20,default='false',blank=True)
+    status=models.BooleanField(default=False)
+    skills = models.JSONField(default=dict)
+    social_links = models.JSONField(default=dict)
     profile_image = models.ImageField(upload_to=name_profile_image, blank=True)
     image = models.ImageField(upload_to=name_image, blank=True)
-    
+    description = models.CharField(max_length=200,default='',blank=True)
+
 
     # def save(self, *args, **kwargs):
     #     password = self.password
@@ -99,6 +103,11 @@ class teacher_models(models.Model):
     city=models.CharField(max_length=50,default='',blank=True)
     state=models.CharField(max_length=50,default='',blank=True)
     country=models.CharField(max_length=50,default='',blank=True)
-    status=models.CharField(max_length=20,default='false',blank=True)
+    status=models.BooleanField(default=False)
+    specialized_in = models.JSONField(default=dict)
+    social_links = models.JSONField(default=dict)
+    subjects = models.JSONField(default=dict)
     profile_image = models.ImageField(upload_to=name_profile_image, blank=True)
     image = models.ImageField(upload_to=name_image, blank=True)
+    description = models.CharField(max_length=200,default='',blank=True)
+

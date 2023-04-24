@@ -110,4 +110,3 @@ class teacher_models(models.Model):
     profile_image = models.ImageField(upload_to=name_profile_image, blank=True)
     image = models.ImageField(upload_to=name_image, blank=True)
     description = models.CharField(max_length=200,default='',blank=True)
-

@@ -519,6 +519,7 @@ def update(request):
                             user_type = serializer.data['user_type']
                             saveImage(name,email)
                             rename_image(user_type,email,name)
+                            return Response({"status":True,"user_data":serializer.data})
                     except:
                         return Response({"status":True,"user_data":serializer.data})
                     
@@ -536,6 +537,7 @@ def update(request):
                             user_type = serializer.data['user_type']
                             saveImage(name,email)
                             rename_image(user_type,email,name)
+                            return Response({"status":True,"user_data":serializer.data})
                     except:
                         return Response({"status":True,"user_data":serializer.data})
                     

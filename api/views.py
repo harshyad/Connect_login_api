@@ -6,6 +6,7 @@ import datetime
 import bcrypt
 import smtplib
 import shutil
+import math
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -165,12 +166,24 @@ def loginlogic(password, user):
 
 def saveImage(name,email):
     directory = "media"
+    arr1 = email.split("@")
+    arr = name.split()
+    name = "".join(arr)
+    name = name.lower()
+    email = arr1[0].lower()
+
+    file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
+    
+    for index, file in enumerate(file_list):
+
+        if(file['title'].split(".")[0] == email):
+            file.Delete()
+        elif(file['title'].split(".")[0] == email+"profile"):
+            file.Delete()
+        else:
+            continue
+
     for f in os.listdir(directory):
-        arr1 = email.split("@")
-        arr = name.split()
-        name = "".join(arr)
-        name = name.lower()
-        email = arr1[0].lower()
         if(f.split(".")[0]==email):
             filename = os.path.join(directory,f)
             gfile = drive.CreateFile({'parents' : [{'id' : folder}], 'title' : f})
@@ -221,6 +234,13 @@ def rename_image(user_type,email,name):
             continue
     return
 
+
+def update_year(email,sem):
+    data = student_models.objects.get(email=email)
+    print("Hello")
+    data.year = str(math.ceil(int(sem)/2))
+    data.save()
+    return
 
 # Create your views here.
 
@@ -512,16 +532,18 @@ def update(request):
                 data, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
+                    name = serializer.data['name']
+                    email = serializer.data['email']
+                    user_type = serializer.data['user_type']
+                    sem = serializer.data['semester']
+                    update_year(email,sem)
                     try:
                         if(request.data['image']):
-                            name = serializer.data['name']
-                            email = serializer.data['email']
-                            user_type = serializer.data['user_type']
                             saveImage(name,email)
                             rename_image(user_type,email,name)
                     except:
                         return Response({"status":True,"user_data":serializer.data})
-                
+
                     return Response({"status":True,"user_data":serializer.data})
                     
                 return Response({"status":False,"error":serializer.errors})

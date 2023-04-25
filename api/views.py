@@ -120,7 +120,7 @@ def loginlogic(password, user):
     # bcrypt.checkpw(password,user.password)
 
     if (user.password != password):
-        return Response({"status":False,"msg": "Incorrect Password"})
+        return Response({"status":False,"msg": "Incorrect Username or Password"})
 
     else:
 
@@ -140,7 +140,7 @@ def loginlogic(password, user):
                     token = jwt.encode(payload, 'secret', algorithm='HS256')
                     return Response({
                         "status":True,
-                        "message": "Successfully Logged in",
+                        "msg": "Successfully Logged in",
                         "user_data":serializer.data,
                         "token":token
                     })
@@ -155,7 +155,7 @@ def loginlogic(password, user):
                     serializer = teacherserializer(user)
                     return Response({
                         "status":True,
-                        "message": "Successfully Logged in",
+                        "msg": "Successfully Logged in",
                         "user_data":serializer.data,
                         "token": token
                     })
@@ -261,7 +261,7 @@ def facelogin(request):
                 eml = arr1[0]
             
         except:
-            return Response({"status":False,"Error": "Please provide all the details"})
+            return Response({"status":False,"msg": "Please provide all the details"})
 
 
         # cam = cv2.VideoCapture(0)
@@ -330,7 +330,7 @@ def facelogin(request):
                 eml = arr1[0]
                 
                 if user is None:
-                    return Response({"status":False, 'Result': "User not found"})
+                    return Response({"status":False, 'msg': "User not found"})
                 
                 file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
                 for index, file in enumerate(file_list):
@@ -364,14 +364,14 @@ def facelogin(request):
                     serializer = Imageserializer(user)
                     return Response({
                         "status":True,
-                        "message": "Successfully Logged in",
+                        "msg": "Successfully Logged in",
                         "user_data":serializer.data,
                         "token": token
                     })
                 else:
-                    return Response({"status":False, "Message":"Face does not match"})
+                    return Response({"status":False, "msg":"Face does not match"})
             except:
-                return Response({"status":False, "Error": "Details does not match"})
+                return Response({"status":False, "msg": "Details does not match"})
             
         elif (user_type == 'teacher'):
 
@@ -379,7 +379,7 @@ def facelogin(request):
                 user = teacher_models.objects.filter(email=email).first()
 
                 if user is None:
-                    return Response({"status":False, 'Result': "User not found"})
+                    return Response({"status":False, 'msg': "User not found"})
                 
                 file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
                 for index, file in enumerate(file_list):
@@ -413,17 +413,17 @@ def facelogin(request):
                     serializer = teacherserializer(user)
                     return Response({
                             "status":True,
-                            "message": "Successfully Logged in",
+                            "msg": "Successfully Logged in",
                             "user_data":serializer.data,
                             "token": token
                         })
                 else:
-                    return Response({"status":False, "Message":"Face does not match"})
+                    return Response({"status":False, "msg":"Face does not match"})
             except:
-                return Response({"status":False, "Error": "Details does not match"})
+                return Response({"status":False, "msg": "Details does not match"})
             
         else:
-            return Response({"status":False, "Error": "Please provide a valid user type"})
+            return Response({"status":False, "msg": "Please provide a valid user type"})
 
 
 

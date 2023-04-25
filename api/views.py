@@ -207,11 +207,12 @@ def rename_image(user_type,email,name):
     return
 
 
+
 # Create your views here.
 
-# @api_view(['POST'])
+@api_view(['POST'])
 # # For Comparing the image taken and the image stored in the database.
-# def facelogin(request):
+def facelogin(request):
 
     if request.method == 'POST':
 
@@ -227,6 +228,8 @@ def rename_image(user_type,email,name):
         name = "".join(arr)
         name = name.lower()
 
+        arr1 = email.split("@")
+        eml = arr1[0]
         # cam = cv2.VideoCapture(0)
         # cv2.namedWindow('Python WebCam Screenshot App')
 
@@ -288,21 +291,22 @@ def rename_image(user_type,email,name):
 
             try:
                 user = student_models.objects.filter(email=email).first()
-                print(str(user.image).split("/")[-1]) # type: ignore
                 file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
-                print("hello")
+                print("1")
                 for index, file in enumerate(file_list):
-                    if(file['id'] == str(user.image).split("/")[-1]): # type: ignore
+                    if(file['id'] == str(user.image).split("=")[-1]): # type: ignore
                         print(index+1,'file downloaded : ', file['title'])
                         file.GetContentFile(file['title'])
-                known_image = face_recognition.load_image_file(f"{name}.jpg")
+                known_image = face_recognition.load_image_file(f"{eml}.jpg")
                 unknown_image = face_recognition.load_image_file(image)
                 image1_encoding = face_recognition.face_encodings(known_image)[0]
                 image2_encoding = face_recognition.face_encodings(unknown_image)[0]
+                print("Hello")
                 results = face_recognition.api.compare_faces([image1_encoding], image2_encoding, tolerance=0.4)
+                print(results)
 
-                if(os.path.exists(f"{name}.jpg")):  
-                    os.remove(f"{name}.jpg")
+                if(os.path.exists(f"{eml}.jpg")):
+                    os.remove(f"{eml}.jpg")
 
                 if user is None:
                     return Response({'Result': "User not found"})
@@ -338,10 +342,11 @@ def rename_image(user_type,email,name):
                 user = teacher_models.objects.filter(email=email).first()
                 file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
                 for index, file in enumerate(file_list):
-                    if(file['id'] == str(user.image).split("/")[-1]): # type: ignore
+                    if(file['id'] == str(user.image).split("=")[-1]): # type: ignore
                         print(index+1,'file downloaded : ', file['title'])
                         file.GetContentFile(file['title'])
-                known_image = face_recognition.load_image_file(f"{name}.jpg")
+                print("Hello")
+                known_image = face_recognition.load_image_file(f"{eml}.jpg")
                 unknown_image = face_recognition.load_image_file(image)
                 image1_encoding = face_recognition.face_encodings(known_image)[0]
                 image2_encoding = face_recognition.face_encodings(unknown_image)[0]

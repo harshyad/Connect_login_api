@@ -92,22 +92,22 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-       'default': {
-           'ENGINE': 'djongo',
-           'NAME': 'api2',
-       }
-}
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': 'test',
-#         'CLIENT': {
-#             'host': "mongodb+srv://Harsh:test@connect.g3ekpv7.mongodb.net/?retryWrites=true&w=majority"
-#         },   
-#     }
+#        'default': {
+#            'ENGINE': 'djongo',
+#            'NAME': 'api2',
+#        }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'test',
+        'CLIENT': {
+            'host': "mongodb+srv://Harsh:test@connect.g3ekpv7.mongodb.net/?retryWrites=true&w=majority"
+        },   
+    }
+}
 
 
 # Password validation

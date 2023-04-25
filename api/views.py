@@ -1,5 +1,5 @@
-# import cv2
-# import face_recognition
+import cv2
+import face_recognition
 import os
 import jwt
 import datetime
@@ -243,24 +243,26 @@ def update_year(email,sem):
     return
 
 # Create your views here.
-
-# @api_view(['POST'])
+@api_view(['POST'])
 # # For Comparing the image taken and the image stored in the database.
-# def facelogin(request):
+def facelogin(request):
 
     if request.method == 'POST':
 
         try:
-            name = request.data['name']
-            email = request.data['email']
             image = request.data['image']
             user_type = request.data['user_type']
-        except:
-            return Response({"Error": "Please provide all the details"})
 
-        arr = name.split()
-        name = "".join(arr)
-        name = name.lower()
+            if(user_type=="student"):
+                roll_no = request.data['roll_no']
+            else:
+                email = request.data['email']
+                arr1 = email.split("@")
+                eml = arr1[0]
+            
+        except:
+            return Response({"status":False,"Error": "Please provide all the details"})
+
 
         # cam = cv2.VideoCapture(0)
         # cv2.namedWindow('Python WebCam Screenshot App')
@@ -322,98 +324,106 @@ def update_year(email,sem):
         if (user_type == 'student'):
 
             try:
-                user = student_models.objects.filter(email=email).first()
-                print(str(user.image).split("/")[-1]) # type: ignore
+                user = student_models.objects.filter(roll_no=roll_no).first()
+
+                arr1 = user.email.split("@")
+                eml = arr1[0]
+                
+                if user is None:
+                    return Response({"status":False, 'Result': "User not found"})
+                
                 file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
                 for index, file in enumerate(file_list):
-                    if(file['id'] == str(user.image).split("/")[-1]): # type: ignore
+                    if(file['id'] == str(user.image).split("=")[-1]): # type: ignore
                         print(index+1,'file downloaded : ', file['title'])
                         file.GetContentFile(file['title'])
-                known_image = face_recognition.load_image_file(f"{name}.jpg")
+                known_image = face_recognition.load_image_file(f"{eml}.jpg")
                 unknown_image = face_recognition.load_image_file(image)
                 image1_encoding = face_recognition.face_encodings(known_image)[0]
                 image2_encoding = face_recognition.face_encodings(unknown_image)[0]
                 results = face_recognition.api.compare_faces([image1_encoding], image2_encoding, tolerance=0.4)
 
-                if(os.path.exists(f"{name}.jpg")):
-                    os.remove(f"{name}.jpg")
+                print(results)
 
+                if(os.path.exists(f"{eml}.jpg")):
+                    os.remove(f"{eml}.jpg")
+                
                 if results == [True]:
-
-                    if user is None:
-                        return Response({'Result': "User not found"})
                     
                     payload = {
                         'id': user.pk,
                         'email': user.email,
                         'roll_no': user.roll_no,
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
                         'iat': datetime.datetime.utcnow(),
                     }
 
                     token = jwt.encode(payload, 'secret', algorithm='HS256')
-
                     # return Response({'Result': results, 'Token': token})
+
+                    serializer = Imageserializer(user)
                     return Response({
+                        "status":True,
                         "message": "Successfully Logged in",
-                        "id": user.pk,
-                        "roll_no": user.roll_no,
-                        "email": user.email,
-                        "status": user.status,
+                        "user_data":serializer.data,
                         "token": token
                     })
                 else:
-                    return Response({"Message":"Face does not match"})
+                    return Response({"status":False, "Message":"Face does not match"})
             except:
-                return Response({"Error": "Details does not match"})
+                return Response({"status":False, "Error": "Details does not match"})
             
         elif (user_type == 'teacher'):
 
             try:
                 user = teacher_models.objects.filter(email=email).first()
+
+                if user is None:
+                    return Response({"status":False, 'Result': "User not found"})
+                
                 file_list = drive.ListFile({'q' : f"'{folder}' in parents and trashed=false"}).GetList()
                 for index, file in enumerate(file_list):
-                    if(file['id'] == str(user.image).split("/")[-1]): # type: ignore
+                    if(file['id'] == str(user.image).split("=")[-1]): # type: ignore
                         print(index+1,'file downloaded : ', file['title'])
                         file.GetContentFile(file['title'])
-                known_image = face_recognition.load_image_file(f"{name}.jpg")
+                print("Hello")
+                known_image = face_recognition.load_image_file(f"{eml}.jpg")
                 unknown_image = face_recognition.load_image_file(image)
                 image1_encoding = face_recognition.face_encodings(known_image)[0]
                 image2_encoding = face_recognition.face_encodings(unknown_image)[0]
                 results = face_recognition.api.compare_faces([image1_encoding], image2_encoding, tolerance=0.4)
 
-                if(os.path.exists(f"{name}.jpg")):
-                    os.remove(f"{name}.jpg")
-
+                if(os.path.exists(f"{eml}.jpg")):
+                    os.remove(f"{eml}.jpg")
+                
                 if results == [True]:  
-                    if user is None:
-                        return Response({'Result': "User not found"})
+                    
 
                     payload = {
                             'id': user.pk,
                             'email': user.email,
-                            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
+                            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
                             'iat': datetime.datetime.utcnow(),
                         }
 
                     token = jwt.encode(payload, 'secret', algorithm='HS256')
 
                     # return Response({'Result': results, 'Token': token})
-                    
+                    print("Hello")
+                    serializer = teacherserializer(user)
                     return Response({
+                            "status":True,
                             "message": "Successfully Logged in",
-                            "id": user.pk,
-                            "email": user.email,
-                            "status": user.status,
+                            "user_data":serializer.data,
                             "token": token
                         })
                 else:
-                    return Response({"Message":"Face does not match"})
+                    return Response({"status":False, "Message":"Face does not match"})
             except:
-                return Response({"Error": "Details does not match"})
+                return Response({"status":False, "Error": "Details does not match"})
             
         else:
-            return Response({"Error": "Please provide a valid user type"})
+            return Response({"status":False, "Error": "Please provide a valid user type"})
 
 
 

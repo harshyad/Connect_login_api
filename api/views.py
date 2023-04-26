@@ -93,8 +93,8 @@ def sendMail(*args):
     s.starttls()
     
     print("Hello")
-    app_password = os.environ.get('APP_PASSWORD')
-    s.login("connect.lms.developers@gmail.com", app_password)
+    # app_password = os.environ.get('APP_PASSWORD')
+    s.login("connect.lms.developers@gmail.com", "addropyvbgdqasdy")
 
     if (pk == 'Rollno'):
         print("Logged in")
